@@ -61,6 +61,25 @@ app.get('/api/persons/:id', (req, res) => {
   }
 })
 
+app.post ('/api/persons', (req, res) => {
+  const body = req.body
+
+  if (!body.name || !body.number) {
+    return res.status(400).json({
+      error : 'Contact Information Missing'
+    })
+  }
+
+  const entry = {
+    "id" : Math.floor(Math.random(1)*2000),
+    "name" : body.name,
+    "number" : body.number
+  }
+
+  phoneBookEntries = phoneBookEntries.concat(entry)
+  res.json(entry)
+})
+
 app.delete('/api/persons/:id', (req, res) => {
 
   const id = Number(req.params.id)
