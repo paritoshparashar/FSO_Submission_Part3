@@ -25,8 +25,17 @@ let phoneBookEntries = [
     }
 ]
 
+morgan.token('postData' , (req) => {
+
+  if (req.method === 'POST') {
+    const data = JSON.stringify(req.body)
+    return data
+  }
+  return '';
+})
+
 app.use(express.json())
-app.use(morgan('tiny'))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :postData'))
 
 app.get('/api/persons', (req, res) => {
     res.json(phoneBookEntries)
@@ -78,7 +87,7 @@ app.post ('/api/persons', (req, res) => {
   }
 
   const entry = {
-    "id" : Math.floor(Math.random(1)*2000),
+    "id" : `${Math.floor(Math.random(1)*2000)}`,
     "name" : body.name,
     "number" : body.number
   }
