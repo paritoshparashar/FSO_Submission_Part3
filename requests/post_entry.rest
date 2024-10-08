@@ -2,6 +2,27 @@ POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-    "name" : "Paritosh Parashar",
+    "name" : "Anjana Sharma",
+    "number" : "121212"
+}
+###
+
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name" : "Arto Hellas",
     "number" : "9560159075"
 }
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+   "some_property" : "Hello"
+}
+
+###
+
+GET http://localhost:3001/api/persons
+###

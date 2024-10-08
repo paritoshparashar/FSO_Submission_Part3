@@ -69,6 +69,11 @@ app.post ('/api/persons', (req, res) => {
       error : 'Contact Information Missing'
     })
   }
+  else if (phoneBookEntries.find((entry) => entry.name === body.name)) {
+    return res.status(400).json({
+      error : 'Name already exists'
+    })
+  }
 
   const entry = {
     "id" : Math.floor(Math.random(1)*2000),
