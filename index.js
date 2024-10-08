@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const morgan = require('morgan')
 
 let phoneBookEntries = [
     { 
@@ -25,6 +26,7 @@ let phoneBookEntries = [
 ]
 
 app.use(express.json())
+app.use(morgan('tiny'))
 
 app.get('/api/persons', (req, res) => {
     res.json(phoneBookEntries)
