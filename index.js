@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 
-const phoneBookEntries = [
+let phoneBookEntries = [
     { 
       "id": "1",
       "name": "Arto Hellas", 
@@ -49,7 +49,7 @@ app.get('/info', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res) => {
-  const id = req.params.id
+  const id = (req.params.id)
 
   const entry = phoneBookEntries.find((entry) => entry.id === id)
 
@@ -59,6 +59,15 @@ app.get('/api/persons/:id', (req, res) => {
   else {
     res.status(404).end()
   }
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+
+  const id = Number(req.params.id)
+  phoneBookEntries = phoneBookEntries.filter((entry) => entry.id !== id)
+
+  res.status(204).end()
+  
 })
 
 const PORT = 3001

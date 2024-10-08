@@ -1,0 +1,6 @@
+### Delete a person by ID
+DELETE http://localhost:3001/api/persons/1
+Content-Type: application/json
+
+### Verify the deletion by trying to get the deleted person
+GET http://localhost:3001/api/persons
