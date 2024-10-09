@@ -1,5 +1,5 @@
 ### Delete a person by ID
-DELETE http://localhost:3001/api/persons/1407
+DELETE http://localhost:3001/api/persons/341
 Content-Type: application/json
 
 ### Verify the deletion by trying to get the deleted person
