@@ -1,32 +1,14 @@
+require('dotenv').config()
+
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const Contact = require('./models/contact')
+
 
 const app = express()
 
-let phoneBookEntries = [
-    { 
-      "id": "1",
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": "2",
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": "3",
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": "4",
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
-
+// Middleware
 morgan.token('postData' , (req) => {
 
   if (req.method === 'POST') {
@@ -41,41 +23,55 @@ app.use(express.json())
 app.use(express.static('dist'))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :postData'))
 
+
+/* GET Requests */
 app.get('/api/persons', (req, res) => {
-    res.json(phoneBookEntries)
-})
 
-app.get('/info', (req, res) => {
-
-  const htmlData = `
-      <html>
-        <head>
-            <title>Info</title>
-        </head>
-        <body>
-            <p>Phonebook has info for ${phoneBookEntries.length} people</p>
-            <br/>
-            <p>${new Date().toString()}</p>
-        </body>
-      </html>
-  `
-  
-  res.send(htmlData)
+    Contact.find({}).then (result => {
+      res.json(result)
+    })
 })
 
 app.get('/api/persons/:id', (req, res) => {
   const id = (req.params.id)
 
-  const entry = phoneBookEntries.find((entry) => entry.id === id)
+  Contact
+  .findById (id)
+  .then ( (contact) => {
+    if (contact) {
+      res.json(contact)
+    }
+    else {
+      res.status(404).end()
+    }
+  })
 
-  if (entry) {
-    res.json(entry)
-  }
-  else {
-    res.status(404).end()
-  }
 })
 
+app.get('/info', (req, res) => {
+
+  Contact.find({}).then(result => {
+
+    const phonebookLength = result.length;
+    const htmlResponse = `
+      <html>
+        <head>
+          <title>Info</title>
+        </head>
+        <body>
+          <p>Phonebook has info for ${phonebookLength} people</p>
+          <br/>
+          <p>${new Date().toString()}</p>
+        </body>
+      </html>
+    `
+
+    res.send(htmlResponse)
+  })
+})
+
+
+/* POST Resquests */
 app.post ('/api/persons', (req, res) => {
   const body = req.body
 
@@ -84,34 +80,42 @@ app.post ('/api/persons', (req, res) => {
       error : 'Contact Information Missing'
     })
   }
-  else if (phoneBookEntries.find((entry) => entry.name === body.name)) {
-    return res.status(400).json({
-      error : 'Name already exists'
-    })
-  }
+  /* **Error Handling
 
-  const entry = {
-    "id" : `${Math.floor(Math.random(1)*2000)}`,
+    else if (phoneBookEntries.find((entry) => entry.name === body.name)) {
+      return res.status(400).json({
+        error : 'Name already exists'
+      })
+    }
+  */
+
+  const newContact = new Contact ({
     "name" : body.name,
     "number" : body.number
-  }
+  })
 
-  phoneBookEntries = phoneBookEntries.concat(entry)
-  res.json(entry)
+  newContact.save().then(result => {
+    res.json(result)
+  })
 })
 
+/* DELETE Request */
 app.delete('/api/persons/:id', (req, res) => {
 
   const id = req.params.id
-  phoneBookEntries = phoneBookEntries.filter((entry) => entry.id !== id)
-
-  res.status(204).end()
+  Contact.findByIdAndDelete (id)
+    .then (result => {
+        res.status(204).end()
+    })
+    .catch (error => {
+      res.status(500).send({error: 'An error occured'})
+    })
   
 })
 
 
-
-const PORT = process.env.PORT || 3001
+/*___________________________________________*/
+const PORT = process.env.PORT
 app.listen(PORT, ()=> {
     console.log(`Server is running on port ${PORT}`)
 })

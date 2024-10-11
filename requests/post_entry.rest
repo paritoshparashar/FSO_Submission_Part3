@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
     "name" : "Anjana Sharma",
-    "number" : "121212"
+    "number" : "7039643227"
 }
 ###
 
@@ -21,6 +21,10 @@ Content-Type: application/json
 {
    "some_property" : "Hello"
 }
+
+###
+
+GET http://localhost:3001/api/persons/670819e1552148891e394287
 
 ###
 
